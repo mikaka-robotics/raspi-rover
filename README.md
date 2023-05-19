@@ -1,5 +1,7 @@
 # Raspi-Rover
 
+![rover_gif](https://github.com/mikaka-robotics/raspi-rover/assets/45257346/d5421312-f1be-49ac-8b68-002ba3b1d22b)
+
 このレポジトリは開発中です。動作の保証はありませんのでご注意ください。
 
 このレポジトリはAIロボット部の開発するロボットについてのレポジトリです。
