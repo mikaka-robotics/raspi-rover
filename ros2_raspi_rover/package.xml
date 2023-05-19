@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>ros2_raspi_rover</name>
+  <version>1.0.0</version>
+  <description>control mechanum wheel robot</description>
+  <maintainer email="dog.vrn0224@gmail.com">ubuntu</maintainer>
+  <license>Apache Licence 2.0</license>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+  <exec_depend>rpm_interfaces</exec_depend>
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
