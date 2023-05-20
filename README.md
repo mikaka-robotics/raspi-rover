@@ -34,6 +34,11 @@ Arduino IDEをインストール。
 
 指令部はROS 2のTwist型の指令を受け取り、逆運動学で各車輪への指令値に変換した後、制御部に向けて二つの車輪の角速度を送信します。制御部は指令値に基づいて車輪の角速度(rad/sec)を計算しています。
 
+図にすると以下のようになります。
+
+![ros2_rover_cmd](https://github.com/mikaka-robotics/raspi-rover/assets/45257346/d5e42860-2475-424a-b0aa-d028ec99d878)
+
+
 以下は実行環境を作成するためのチュートリアルです。
 
 #### Ubuntu22.04をraspberry piにインストールする
