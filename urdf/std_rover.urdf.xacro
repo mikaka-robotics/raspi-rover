@@ -22,6 +22,16 @@
   <xacro:property name="caster_mass" value="0.05"/>
   <xacro:property name="caster_inertia" value="0.0000125 0.0 0.0 0.0000125 0.0 0.0000125"/>
 
+
+  <!-- Base Footprint Link -->
+  <link name="base_footprint">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+
   <!-- Base Link -->
   <xacro:macro name="base_link" params="name">
     <link name="${name}">
@@ -134,6 +144,11 @@
   <xacro:caster_link name="caster"/>
 
   <!-- Joint Definitions -->
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
   <!-- LIDAR Joint -->
   <joint name="lidar_joint" type="fixed">
     <parent link="base_link"/>
@@ -178,7 +193,7 @@
       <commandTopic>cmd_vel</commandTopic>
       <odometryTopic>odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>base_link</robotBaseFrame>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
     </plugin>
   </gazebo>
 
