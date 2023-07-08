@@ -42,7 +42,7 @@ Arduino IDEをインストール。
 以下は実行環境を作成するためのチュートリアルです。
 
 #### Ubuntu22.04をraspberry piにインストールする
-Raspberry Piである必要はありませんが、Ubuntu20.04が動作するPCにUbuntu20.04をインストールします。
+Raspberry Piである必要はありませんが、Ubuntu22.04が動作するPCにUbuntu22.04をインストールします。
 ```
 ここに色々入れる（前書いたcodimd）
 ```
