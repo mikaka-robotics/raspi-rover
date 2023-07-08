@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="two_wheeled_robot">
+
+  <!-- Properties -->
+  <xacro:property name="base_size" value="0.11 0.08 0.1"/>
+  <xacro:property name="base_mass" value="1"/>
+  <xacro:property name="base_inertia" value="0.001 0.0 0.0 0.001 0.0 0.001"/>
+
+  <xacro:property name="lidar_size" value="0.02 0.025"/>
+  <xacro:property name="lidar_mass" value="0.1"/>
+  <xacro:property name="lidar_inertia" value="0.0001 0.0 0.0 0.0001 0.0 0.0001"/>
+
+  <xacro:property name="wheel_size" value="0.03 0.0075"/>
+  <xacro:property name="wheel_mass" value="0.1"/>
+  <xacro:property name="wheel_inertia" value="0.0001 0.0 0.0 0.0001 0.0 0.0001"/>
+
+  <xacro:property name="caster_cylinder_size" value="0.01 0.025"/>
+  <xacro:property name="caster_cylinder_mass" value="0.05"/>
+  <xacro:property name="caster_cylinder_inertia" value="0.001 0.0001 0.0 0.0 0.0 0.0"/>
+
+  <xacro:property name="caster_size" value="0.01"/>
+  <xacro:property name="caster_mass" value="0.05"/>
+  <xacro:property name="caster_inertia" value="0.0000125 0.0 0.0 0.0000125 0.0 0.0000125"/>
+
+
+  <!-- Base Footprint Link -->
+  <link name="base_footprint">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+
+  <!-- Base Link -->
+  <xacro:macro name="base_link" params="name">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <box size="${base_size}"/>
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="${base_size}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${base_mass}"/>
+        <inertia ixx="${base_inertia[0]}" ixy="${base_inertia[1]}" ixz="${base_inertia[2]}" iyy="${base_inertia[3]}" iyz="${base_inertia[4]}" izz="${base_inertia[5]}"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+  <xacro:base_link name="base_link"/>
+
+  <!-- LIDAR Link -->
+  <xacro:macro name="lidar_link" params="name">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <cylinder radius="${lidar_size[0]}" length="${lidar_size[1]}"/>
+        </geometry>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <material name="blue">
+          <color rgba="0 0 1 1"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${lidar_size[0]}" length="${lidar_size[1]}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${lidar_mass}"/>
+        <inertia ixx="${lidar_inertia[0]}" ixy="${lidar_inertia[1]}" ixz="${lidar_inertia[2]}" iyy="${lidar_inertia[3]}" iyz="${lidar_inertia[4]}" izz="${lidar_inertia[5]}"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+  <xacro:lidar_link name="lidar"/>
+
+  <!-- Wheel Links -->
+  <xacro:macro name="wheel_link" params="name">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <cylinder radius="${wheel_size[0]}" length="${wheel_size[1]}"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${wheel_size[0]}" length="${wheel_size[1]}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${wheel_mass}"/>
+        <inertia ixx="${wheel_inertia[0]}" ixy="${wheel_inertia[1]}" ixz="${wheel_inertia[2]}" iyy="${wheel_inertia[3]}" iyz="${wheel_inertia[4]}" izz="${wheel_inertia[5]}"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+  <xacro:wheel_link name="left_wheel"/>
+  <xacro:wheel_link name="right_wheel"/>
+
+  <!--Caster Cylinder Link-->
+  <xacro:macro name="caster_cylinder_link" params="name">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <cylinder radius="${caster_cylinder_size[0]}" length="${caster_cylinder_size[1]}"/>
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${caster_cylinder_size[0]}" length="${caster_cylinder_size[1]}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${caster_cylinder_mass}"/>
+        <inertia ixx="${caster_cylinder_inertia[0]}" ixy="${caster_cylinder_inertia[1]}" ixz="${caster_cylinder_inertia[2]}" iyy="${caster_cylinder_inertia[3]}" iyz="${caster_cylinder_inertia[4]}" izz="${caster_cylinder_inertia[5]}"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+  <xacro:caster_cylinder_link name="caster_cylinder"/>
+
+  <!-- Caster Link -->
+  <xacro:macro name="caster_link" params="name">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <sphere radius="${caster_size}"/>
+        </geometry>
+      </visual>
+      <collision>
+        <geometry>
+          <sphere radius="${caster_size}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${caster_mass}"/>
+        <inertia ixx="${caster_inertia[0]}" ixy="${caster_inertia[1]}" ixz="${caster_inertia[2]}" iyy="${caster_inertia[3]}" iyz="${caster_inertia[4]}" izz="${caster_inertia[5]}"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+  <xacro:caster_link name="caster"/>
+
+  <!-- Joint Definitions -->
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <!-- LIDAR Joint -->
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar"/>
+    <origin xyz="0 0 0.0625" rpy="0 0 0"/>
+  </joint>
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="-0.0125 -0.04375 -0.05" rpy="1.57075 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="-0.0125 0.04375 -0.05" rpy="1.57075 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="cylinder_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_cylinder"/>
+    <origin xyz="0.0375 0 -0.05125" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="caster_joint" type="floating">
+    <parent link="caster_cylinder"/>
+    <child link="caster"/>
+    <origin xyz="0 0 -0.0125" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo plugin for differential drive -->
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <legacyMode>false</legacyMode>
+      <alwaysOn>true</alwaysOn>
+      <updateRate>100</updateRate>
+      <leftJoint>left_wheel_joint</leftJoint>
+      <rightJoint>right_wheel_joint</rightJoint>
+      <wheelSeparation>0.0875</wheelSeparation>
+      <wheelDiameter>0.06</wheelDiameter>
+      <torque>0.5</torque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+    </plugin>
+  </gazebo>
+
+  <!-- Gazebo plugin for RPLIDAR A1 -->
+  <gazebo reference="lidar">
+    <sensor type="ray" name="head">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>6.28319</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.12</min>
+          <max>3.5</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head" filename="libgazebo_ros_laser.so">
+        <topicName>/scan</topicName>
+        <frameName>lidar</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+</robot>
