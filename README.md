@@ -52,6 +52,16 @@ TODO
 #### micro-ROSをインストールし、ESP32との通信を確認する
 TODO
 
+#### repositryをローカルにcloneしてソースコードをダウンロードし、ros2_wsでビルドする
+```bash
+mkdir Documents/robot
+cd Documents/robot
+git clone https://github.com/mikaka-robotics/raspi-rover.git
+cp raspi-rover/ros2_raspi_rover ~/ros2_ws/src
+cp raspi-rover/ros2_raspi_rover_description ~/ros2_ws/src
+cd ~/ros2_ws
+colcon buid
+```
 #### ros2-teleop-twist-keyboardでキーボードから指令値を出す
 TODO
 
