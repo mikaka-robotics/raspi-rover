@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <robot name="two_wheeled_robot">
   <!-- Base Footprint Link -->
   <link name="base_footprint">
@@ -12,11 +13,14 @@
     <visual>
       <geometry>
         <box size="0.11 0.08 0.1"/>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <box size="0.12 0.08 0.1"/>
+        <box size="0.11 0.08 0.1"/>
       </geometry>
     </collision>
     <inertial>
@@ -51,7 +55,9 @@
       <geometry>
         <cylinder radius="0.03" length="0.0075"/>
       </geometry>
-      <material name="black"/>
+      <material name="cyan">
+        <color rgba="0 1 1 1"/>
+      </material>
     </visual>
     <collision>
       <geometry>
@@ -60,7 +66,7 @@
     </collision>
     <inertial>
       <mass value="0.1"/>
-      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+      <inertia ixx="0.000045" ixy="0.0" ixz="0.0" iyy="0.000045" iyz="0.0" izz="0.000045"/>
     </inertial>
   </link>
   <link name="right_wheel">
@@ -68,8 +74,8 @@
       <geometry>
         <cylinder radius="0.03" length="0.0075"/>
       </geometry>
-      <material name="black">
-        <color rgba="0.2 0.2 0.2 1"/>
+      <material name="cyan">
+        <color rgba="0 1 1 1"/>
       </material>
     </visual>
     <collision>
@@ -79,7 +85,7 @@
     </collision>
     <inertial>
       <mass value="0.1"/>
-      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+      <inertia ixx="0.000045" ixy="0.0" ixz="0.0" iyy="0.000045" iyz="0.0" izz="0.000045"/>
     </inertial>
   </link>
   <!--Caster Cylinder Link-->
@@ -96,7 +102,7 @@
     </collision>
     <inertial>
       <mass value="0.05"/>
-      <inertia ixx="0.001" ixy="0.0001" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+       <inertia ixx="0.0000025" ixy="0.0" ixz="0.0" iyy="0.0000025" iyz="0.0" izz="0.0000025"/>
     </inertial>
   </link>
   <!-- Caster Link -->
@@ -113,7 +119,7 @@
     </collision>
     <inertial>
       <mass value="0.05"/>
-      <inertia ixx="0.0000125" ixy="0.0" ixz="0.0" iyy="0.0000125" iyz="0.0" izz="0.0000125"/>
+      <inertia ixx="0.000002" ixy="0.0" ixz="0.0" iyy="0.000002" iyz="0.0" izz="0.000002"/>
     </inertial>
   </link>
   <!-- Joint Definitions -->
@@ -158,19 +164,22 @@
   </joint>
   <!-- Gazebo plugin for differential drive -->
   <gazebo>
-    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
-      <legacyMode>false</legacyMode>
-      <alwaysOn>true</alwaysOn>
-      <updateRate>100</updateRate>
-      <leftJoint>left_wheel_joint</leftJoint>
-      <rightJoint>right_wheel_joint</rightJoint>
-      <wheelSeparation>0.0875</wheelSeparation>
-      <wheelDiameter>0.06</wheelDiameter>
+    <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+      <legacy_mode>false</legacy_mode>
+      <always_on>true</always_on>
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.0875</wheel_separation>
+      <wheel_diameter>0.06</wheel_diameter>
       <torque>0.5</torque>
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <!-- output -->
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>false</publish_odom_tf>
+      <publish_wheel_tf>false</publish_wheel_tf>
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
     </plugin>
   </gazebo>
   <!-- Gazebo plugin for RPLIDAR A1 -->
@@ -199,7 +208,7 @@
           <stddev>0.01</stddev>
         </noise>
       </ray>
-      <plugin name="gazebo_ros_head" filename="libgazebo_ros_laser.so">
+      <plugin name="gazebo_ros_head" filename="libgazebo_ros_ray_sensor.so">
         <topicName>/scan</topicName>
         <frameName>lidar</frameName>
       </plugin>
