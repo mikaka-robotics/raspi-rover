@@ -18,12 +18,12 @@ class TwistSubRpmPub(Node):
         )
         self.left_wheel_publisher = self.create_publisher(
             Float64, 
-            'left_wheel_radsec',
+            'target_left_radsec',
             10
         )
         self.right_wheel_publisher = self.create_publisher(
             Float64,
-            'right_wheel_radsec',
+            'target_right_radsec',
             10
         )
         self.cmd_subscription  # prevent unused variable warning

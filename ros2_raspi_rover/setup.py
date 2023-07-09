@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'twist_to_radsec = ros2_raspi_rover.twist_to_radsec:main'
+            'twist_to_radsec = ros2_raspi_rover.twist_to_radsec_diff:main',
             'trapezoidal = ros2_raspi_rover.trapezoidal_control:main'
         ],
     },
