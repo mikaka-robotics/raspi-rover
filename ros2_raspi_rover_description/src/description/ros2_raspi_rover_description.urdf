@@ -92,12 +92,12 @@
   <link name="caster_cylinder">
     <visual>
       <geometry>
-        <cylinder radius="0.01" length="0.025"/>
+        <cylinder radius="0.01" length="0.02"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <cylinder radius="0.01" length="0.025"/>
+        <cylinder radius="0.01" length="0.02"/>
       </geometry>
     </collision>
     <inertial>
@@ -152,13 +152,13 @@
   <joint name="cylinder_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_cylinder"/>
-    <origin xyz="0.0375 0 -0.05125" rpy="0 0 0"/>
+    <origin xyz="0.0375 0 -0.06" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
   <joint name="caster_joint" type="revolute">
     <parent link="caster_cylinder"/>
     <child link="caster"/>
-    <origin xyz="0 0 -0.0125" rpy="0 0 0"/>
+    <origin xyz="0 0 -0.01" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
     <limit lower="-3.14159" upper="3.14159" effort="0.0" velocity="0.0"/>
   </joint>
