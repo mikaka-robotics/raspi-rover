@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<robot name="two_wheeled_robot">
+  <!-- Base Footprint Link -->
+  <link name="base_footprint">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="0.0000001" ixy="0" ixz="0" iyy="0.0000001" iyz="0" izz="0.0000001"/>
+    </inertial>
+  </link>
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.11 0.08 0.1"/>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.11 0.08 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <!-- LIDAR Link -->
+  <link name="lidar">
+    <visual>
+      <geometry>
+        <cylinder radius="0.02" length="0.025"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.02" length="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <!-- Wheel Links -->
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.0075"/>
+      </geometry>
+      <material name="cyan">
+        <color rgba="0 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.0075"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.000045" ixy="0.0" ixz="0.0" iyy="0.000045" iyz="0.0" izz="0.000045"/>
+    </inertial>
+  </link>
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.03" length="0.0075"/>
+      </geometry>
+      <material name="cyan">
+        <color rgba="0 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.03" length="0.075"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.000045" ixy="0.0" ixz="0.0" iyy="0.000045" iyz="0.0" izz="0.000045"/>
+    </inertial>
+  </link>
+  <!--Caster Cylinder Link-->
+  <link name="caster_cylinder">
+    <visual>
+      <geometry>
+        <cylinder radius="0.01" length="0.025"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.01" length="0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+       <inertia ixx="0.0000025" ixy="0.0" ixz="0.0" iyy="0.0000025" iyz="0.0" izz="0.0000025"/>
+    </inertial>
+  </link>
+  <!-- Caster Link -->
+  <link name="caster">
+    <visual>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.000002" ixy="0.0" ixz="0.0" iyy="0.000002" iyz="0.0" izz="0.000002"/>
+    </inertial>
+  </link>
+  <!-- Joint Definitions -->
+  <!-- Base Footprint Joint -->
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <!-- LIDAR Joint -->
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar"/>
+    <origin xyz="0 0 0.0625" rpy="0 0 0"/>
+  </joint>
+  <!-- Wheels Joint -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="-0.0125 -0.04375 -0.05" rpy="1.57075 0 0"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="-0.0125 0.04375 -0.05" rpy="1.57075 0 0"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+  <!-- Cylinder Caster Joint -->
+  <joint name="cylinder_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_cylinder"/>
+    <origin xyz="0.0375 0 -0.05125" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <joint name="caster_joint" type="revolute">
+    <parent link="caster_cylinder"/>
+    <child link="caster"/>
+    <origin xyz="0 0 -0.0125" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14159" upper="3.14159" effort="0.0" velocity="0.0"/>
+  </joint>
+  <!-- Gazebo plugin for differential drive -->
+  <gazebo>
+    <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+      <legacy_mode>false</legacy_mode>
+      <always_on>true</always_on>
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.0875</wheel_separation>
+      <wheel_diameter>0.06</wheel_diameter>
+      <torque>0.5</torque>
+      <!-- output -->
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>false</publish_odom_tf>
+      <publish_wheel_tf>false</publish_wheel_tf>
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+    </plugin>
+  </gazebo>
+  <!-- Gazebo plugin for RPLIDAR A1 -->
+  <gazebo reference="lidar">
+    <sensor type="ray" name="head">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>0</min_angle>
+            <max_angle>6.28319</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.12</min>
+          <max>3.5</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head" filename="libgazebo_ros_ray_sensor.so">
+        <topicName>/scan</topicName>
+        <frameName>lidar</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+</robot>
