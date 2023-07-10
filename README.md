@@ -50,9 +50,39 @@ Raspberry Piである必要はありませんが、Ubuntu22.04が動作するPC�
 TODO
 
 #### micro-ROSをインストールし、ESP32との通信を確認する
-TODO
+まずはmicro-ROS AgentをホストPC(raspberry pi)にインストールする。
+```bash
+cd {ros2のwork spaceのパス}
+source /opt/ros/$ROS_DISTRO/setup.bash
+git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup
+rosdep update && rosdep install --from-paths src --ignore-src -y
+colcon build
+source install/local_setup.bash
+```
+また以下を実行し、セットアップを完了する。
+```bash
+ros2 run micro_ros_setup create_agent_ws.sh
+ros2 run micro_ros_setup build_agent.sh
+source install/local_setup.sh
+```
+つづいてESP32で実行するraspi_rover_esp32.inoを書きかえてからデプロイする。
+ファイルの112行目でwifiのSSIDとpass、さらに接続するホストPC（rasberry pi）のipアドレスを設定する。
+```C++
+set_microros_wifi_transports("wifi-ssid", "wifi-pass", "192.168.your.ip-addres", 8888);
+```
+上記を書きかえたら、arduino IDEで書き込み先USB-serial,書き込み形式ESP32-dev moduleを選びデプロイする。
+通電中は書き込んだ.inoファイルが実行されるので、ここからはwifi経由でホストPC（raspberry pi）と接続する。
+ホストPC(raspberry pi)側で以下を実行し、raspi-ESP32の通信を確立する。
+```bash
+ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888 -v6
+```
+トピックを確認する。
+```bash
+ros2 topic list
+```
+`/odom`と`/left_radsec`と`/right_radsec`が表示されていれば成功！
 
-#### repositryをローカルにcloneしてソースコードをダウンロードし、ros2_wsでビルドする
+#### 本リポジトリをローカルにcloneしてソースコードをダウンロードし、ros2_wsでビルドする
 ```bash
 mkdir Documents/robot
 cd Documents/robot
