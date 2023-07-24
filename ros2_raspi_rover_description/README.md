@@ -1,3 +1,5 @@
+# GazeboとRviz2でロボットシミュレーター
+
 このレポジトリはこの[チュートリアル](https://navigation.ros.org/setup_guides/urdf/setup_urdf.html)に基づいて作成されました。
 
 ### 依存関係の解決
@@ -24,13 +26,17 @@ colcon build --symlink-install
 
 ### 実行
 
-- in teminal1
+#### in teminal1
 
 ```bash
 ros2 launch ros2_raspi_rover_description display.launch.py
 ```
 
 gazeboとrviz2が立ち上がり、物理シュミレーションとロボットの内部状態の可視化が始まる。
+
+
+<details>
+<summary>ログ</summary>
 
 ```bash
 ros2 launch ros2_raspi_rover_description display.launch.py
@@ -80,20 +86,26 @@ ros2 launch ros2_raspi_rover_description display.launch.py
 [gazebo-1] [INFO] [1689081401.074315534] [diff_drive]: Advertise odometry on [/odom]
 [INFO] [spawn_entity.py-4]: process has finished cleanly [pid 6767]
 ```
+</details>
+
+上記ログと下記画面が出れば成功。
 
 ![simulation](imgs/image.png)
-上記ログと画面が出れば成功。
-URDFの定義が汚いとロボットが転んだり、LIDARが傾いたりする。
+
+URDFの定義が汚いとロボットが転んだり、LIDARが傾いたり、ロボットがひっくり返ったりする。  
 慣性モーメントが非現実的というエラーも出るたまに。
 
-- in terminal2
+#### in terminal2
 
 ```bash
 ros2 launch slam_toolbox online_async_launch.py
 ```
 
-slamが実行され、自己位置推定と地図作成が開始される。rvizで/mapを追加し可視化すると
+slamが実行され、自己位置推定と地図作成が開始される。rvizで/mapを追加し可視化すると  
 既知領域（移動可能）既知領域（障害物）と未知領域の/mapが作成されているのがわかる。
+
+<details>
+<summary>ログ</summary>
 
 ```bash
 ros2 launch slam_toolbox online_async_launch.py
@@ -106,13 +118,16 @@ ros2 launch slam_toolbox online_async_launch.py
 [async_slam_toolbox_node-1] Info: clipped range threshold to be within minimum and maximum range!
 [async_slam_toolbox_node-1] Registering sensor: [Custom Described Lidar]
 ```
+</details>
+
+上記ログと下記画像が出れば成功。
 
 ![slam_toolbox](imgs/image-1.png)
-上記ログと画像が出れば成功。
-/mapがロボットの移動とともに作られるようになる。
+
+/mapがロボットの移動とともに作られるようになる。  
 なおロボット移動させたいならば、以下実行する。
 
-- in terminal3
+#### in terminal3
 
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -151,14 +166,17 @@ CTRL-C to quit
 currently:	speed 0.5	turn 1.0
 ```
 
-このようなログが出る。/cmd_velトピックにnav_msgs/Twist型のメッセージを送るノードを立ち上げた。
+実行すると上記のようなログが出る。/cmd_velトピックにnav_msgs/Twist型のメッセージを送るノードを立ち上げた。  
 速度はデフォルトだと早すぎるので`speed 0.2`位を目安に`x`キーで減速してからコマンド打つ。
 
-- in terminal4
+#### in terminal4
 
 ```bash
 ros2 launch nav2_bringup navigation_launch.py
 ```
+
+<details>
+<summary>ログ</summary>
 
 ```bash
 $ ros2 launch nav2_bringup navigation_launch.py 
@@ -333,6 +351,7 @@ turtlebot@turtlebot-CFSZ5-2L:~$ ros2 launch nav2_bringup navigation_launch.py us
 [lifecycle_manager-8] [INFO] [1689419931.527892074] [lifecycle_manager_navigation]: Managed nodes are active
 [lifecycle_manager-8] [INFO] [1689419931.531749161] [lifecycle_manager_navigation]: Creating bond timer...
 ```
+</details>
 
 ロボットの経路計算に使われるコストマップが表示される。
 
