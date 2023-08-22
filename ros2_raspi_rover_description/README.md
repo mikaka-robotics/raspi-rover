@@ -15,7 +15,6 @@ sudo apt install ros-humble-nav2-bringup
 sudo apt install ros-humble-ros-gz
 sudo apt install ros-foxy-rmw-cyclonedds-cpp
 export export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp 
-//デフォルトのfast-RTPSだと特有のバグがあるらしい
 ```
 
 ## ビルド
@@ -34,6 +33,10 @@ ros2 launch ros2_raspi_rover_description display.launch.py use_sim_time:=true
 ```
 
 gazeboとrviz2が立ち上がり、物理シュミレーションとロボットの内部状態の可視化が始まる。
+
+<details>
+
+<summary>ログ</summary>
 
 ```bash
 ros2 launch ros2_raspi_rover_description display.launch.py
@@ -84,10 +87,14 @@ ros2 launch ros2_raspi_rover_description display.launch.py
 [INFO] [spawn_entity.py-4]: process has finished cleanly [pid 6767]
 ```
 
+</details>
+
+上記ログと下記画面が出れば成功。
+
 ![simulation](imgs/image.png)
-上記ログと画面が出れば成功。
+
 URDFの定義が汚いとロボットが転んだり、LIDARが傾いたりする。
-慣性モーメントが非現実的というエラーも出るたまに。
+慣性モーメントが非現実的というエラーが出る。
 
 - in terminal2
 
@@ -97,6 +104,9 @@ ros2 launch slam_toolbox online_async_launch.py use_sim_time:=true
 
 slamが実行され、自己位置推定と地図作成が開始される。rvizで/mapを追加し可視化すると
 既知領域（移動可能）既知領域（障害物）と未知領域の/mapが作成されているのがわかる。
+<details>
+
+<summary>ログ</summary>
 
 ```bash
 [INFO] [launch]: All log files can be found below /home/turtlebot/.ros/log/2023-07-11-22-24-06-148711-turtlebot-CFSZ5-2L-7904
@@ -109,10 +119,14 @@ slamが実行され、自己位置推定と地図作成が開始される。rviz
 [async_slam_toolbox_node-1] Registering sensor: [Custom Described Lidar]
 ```
 
+</details>
+
+上記ログと下記画像が出れば成功。
+
 ![slam_toolbox](imgs/image-1.png)
-上記ログと画像が出れば成功。
+
 /mapがロボットの移動とともに作られるようになる。
-なおロボット移動させたいならば、以下実行する。
+なおロボット移動させるときは、以下実行する。
 
 - in terminal3
 
@@ -161,6 +175,10 @@ currently: speed 0.5 turn 1.0
 ```bash
 ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
 ```
+
+<details>
+
+<summary>ログ</summary>
 
 ```bash
 [INFO] [launch]: All log files can be found below /home/turtlebot/.ros/log/2023-07-15-20-18-35-577423-turtlebot-CFSZ5-2L-5901
@@ -331,13 +349,18 @@ ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
 [lifecycle_manager-8] [INFO] [1689419931.531749161] [lifecycle_manager_navigation]: Creating bond timer...
 ```
 
+</details>
+
 ロボットの経路計算に使われるコストマップが表示される。
 
 ![global_costmap](imgs/image-2.png)
+グローバルコストマップの可視化の様子
 ![local_costmap](imgs/image-3.png)
+ローカルコストマップの可視化の様子
 
 ## Turtlebot3_world.worldでシュミレーション
 
+上記の諸々が動作するURDFが書いてあれば以下でnav2が呼び出せる。
 ```bash
 //turtlebot3のgazeboモデルを読み込みたい
 sudo apt install ros-humble-turtlebot3-gazebo
