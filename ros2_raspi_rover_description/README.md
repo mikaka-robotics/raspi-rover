@@ -1,8 +1,9 @@
-# GazeboとRviz2でロボットシミュレーター
+# raspi_rover_description
 
 このレポジトリはこの[チュートリアル](https://navigation.ros.org/setup_guides/urdf/setup_urdf.html)に基づいて作成されました。
 
-### 依存関係の解決
+## 依存関係の解決
+
 ```bash
 sudo apt install ros-humble-joint-state-publisher-gui
 sudo apt install ros-humble-xacro
@@ -17,26 +18,22 @@ export export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 //デフォルトのfast-RTPSだと特有のバグがあるらしい
 ```
 
-### ビルド
+## ビルド
 
 ```bash
 cd ros2_ws
 colcon build --symlink-install
 ```
 
-### 実行
+## 実行
 
-#### in teminal1
+- in teminal1
 
 ```bash
-ros2 launch ros2_raspi_rover_description display.launch.py
+ros2 launch ros2_raspi_rover_description display.launch.py use_sim_time:=true
 ```
 
 gazeboとrviz2が立ち上がり、物理シュミレーションとロボットの内部状態の可視化が始まる。
-
-
-<details>
-<summary>ログ</summary>
 
 ```bash
 ros2 launch ros2_raspi_rover_description display.launch.py
@@ -86,29 +83,22 @@ ros2 launch ros2_raspi_rover_description display.launch.py
 [gazebo-1] [INFO] [1689081401.074315534] [diff_drive]: Advertise odometry on [/odom]
 [INFO] [spawn_entity.py-4]: process has finished cleanly [pid 6767]
 ```
-</details>
-
-上記ログと下記画面が出れば成功。
 
 ![simulation](imgs/image.png)
-
-URDFの定義が汚いとロボットが転んだり、LIDARが傾いたり、ロボットがひっくり返ったりする。  
+上記ログと画面が出れば成功。
+URDFの定義が汚いとロボットが転んだり、LIDARが傾いたりする。
 慣性モーメントが非現実的というエラーも出るたまに。
 
-#### in terminal2
+- in terminal2
 
 ```bash
-ros2 launch slam_toolbox online_async_launch.py
+ros2 launch slam_toolbox online_async_launch.py use_sim_time:=true
 ```
 
-slamが実行され、自己位置推定と地図作成が開始される。rvizで/mapを追加し可視化すると  
+slamが実行され、自己位置推定と地図作成が開始される。rvizで/mapを追加し可視化すると
 既知領域（移動可能）既知領域（障害物）と未知領域の/mapが作成されているのがわかる。
 
-<details>
-<summary>ログ</summary>
-
 ```bash
-ros2 launch slam_toolbox online_async_launch.py
 [INFO] [launch]: All log files can be found below /home/turtlebot/.ros/log/2023-07-11-22-24-06-148711-turtlebot-CFSZ5-2L-7904
 [INFO] [launch]: Default logging verbosity is set to INFO
 [INFO] [async_slam_toolbox_node-1]: process started with pid [7907]
@@ -118,16 +108,13 @@ ros2 launch slam_toolbox online_async_launch.py
 [async_slam_toolbox_node-1] Info: clipped range threshold to be within minimum and maximum range!
 [async_slam_toolbox_node-1] Registering sensor: [Custom Described Lidar]
 ```
-</details>
-
-上記ログと下記画像が出れば成功。
 
 ![slam_toolbox](imgs/image-1.png)
-
-/mapがロボットの移動とともに作られるようになる。  
+上記ログと画像が出れば成功。
+/mapがロボットの移動とともに作られるようになる。
 なおロボット移動させたいならば、以下実行する。
 
-#### in terminal3
+- in terminal3
 
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
@@ -163,27 +150,19 @@ e/c : increase/decrease only angular speed by 10%
 
 CTRL-C to quit
 
-currently:	speed 0.5	turn 1.0
+currently: speed 0.5 turn 1.0
 ```
 
-実行すると上記のようなログが出る。/cmd_velトピックにnav_msgs/Twist型のメッセージを送るノードを立ち上げた。  
+このようなログが出る。/cmd_velトピックにnav_msgs/Twist型のメッセージを送るノードを立ち上げた。
 速度はデフォルトだと早すぎるので`speed 0.2`位を目安に`x`キーで減速してからコマンド打つ。
 
-#### in terminal4
+- in terminal4
 
 ```bash
-ros2 launch nav2_bringup navigation_launch.py
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
 ```
 
-<details>
-<summary>ログ</summary>
-
 ```bash
-$ ros2 launch nav2_bringup navigation_launch.py 
-[INFO] [launch]: All log files can be found below /home/turtlebot/.ros/log/2023-07-15-20-18-23-792982-turtlebot-CFSZ5-2L-5858
-[INFO] [launch]: Default logging verbosity is set to INFO
-^C[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
-turtlebot@turtlebot-CFSZ5-2L:~$ ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
 [INFO] [launch]: All log files can be found below /home/turtlebot/.ros/log/2023-07-15-20-18-35-577423-turtlebot-CFSZ5-2L-5901
 [INFO] [launch]: Default logging verbosity is set to INFO
 [INFO] [controller_server-1]: process started with pid [5927]
@@ -195,49 +174,49 @@ turtlebot@turtlebot-CFSZ5-2L:~$ ros2 launch nav2_bringup navigation_launch.py us
 [INFO] [velocity_smoother-7]: process started with pid [5939]
 [INFO] [lifecycle_manager-8]: process started with pid [5941]
 [waypoint_follower-6] [INFO] [1689419922.237441569] [waypoint_follower]: 
-[waypoint_follower-6] 	waypoint_follower lifecycle node launched. 
-[waypoint_follower-6] 	Waiting on external lifecycle transitions to activate
-[waypoint_follower-6] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[waypoint_follower-6]  waypoint_follower lifecycle node launched. 
+[waypoint_follower-6]  Waiting on external lifecycle transitions to activate
+[waypoint_follower-6]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [smoother_server-2] [INFO] [1689419922.276917500] [smoother_server]: 
-[smoother_server-2] 	smoother_server lifecycle node launched. 
-[smoother_server-2] 	Waiting on external lifecycle transitions to activate
-[smoother_server-2] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[smoother_server-2]  smoother_server lifecycle node launched. 
+[smoother_server-2]  Waiting on external lifecycle transitions to activate
+[smoother_server-2]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [bt_navigator-5] [INFO] [1689419922.300505799] [bt_navigator]: 
-[bt_navigator-5] 	bt_navigator lifecycle node launched. 
-[bt_navigator-5] 	Waiting on external lifecycle transitions to activate
-[bt_navigator-5] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[bt_navigator-5]  bt_navigator lifecycle node launched. 
+[bt_navigator-5]  Waiting on external lifecycle transitions to activate
+[bt_navigator-5]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [waypoint_follower-6] [INFO] [1689419922.301062986] [waypoint_follower]: Creating
 [bt_navigator-5] [INFO] [1689419922.301731128] [bt_navigator]: Creating
 [smoother_server-2] [INFO] [1689419922.437563413] [smoother_server]: Creating smoother server
 [planner_server-3] [INFO] [1689419922.545866570] [planner_server]: 
-[planner_server-3] 	planner_server lifecycle node launched. 
-[planner_server-3] 	Waiting on external lifecycle transitions to activate
-[planner_server-3] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-3]  planner_server lifecycle node launched. 
+[planner_server-3]  Waiting on external lifecycle transitions to activate
+[planner_server-3]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [planner_server-3] [INFO] [1689419922.660452542] [planner_server]: Creating
 [behavior_server-4] [INFO] [1689419922.879208164] [behavior_server]: 
-[behavior_server-4] 	behavior_server lifecycle node launched. 
-[behavior_server-4] 	Waiting on external lifecycle transitions to activate
-[behavior_server-4] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[behavior_server-4]  behavior_server lifecycle node launched. 
+[behavior_server-4]  Waiting on external lifecycle transitions to activate
+[behavior_server-4]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [controller_server-1] [INFO] [1689419922.970348322] [controller_server]: 
-[controller_server-1] 	controller_server lifecycle node launched. 
-[controller_server-1] 	Waiting on external lifecycle transitions to activate
-[controller_server-1] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[controller_server-1]  controller_server lifecycle node launched. 
+[controller_server-1]  Waiting on external lifecycle transitions to activate
+[controller_server-1]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [lifecycle_manager-8] [INFO] [1689419922.994013974] [lifecycle_manager_navigation]: Creating
 [planner_server-3] [INFO] [1689419922.994654984] [global_costmap.global_costmap]: 
-[planner_server-3] 	global_costmap lifecycle node launched. 
-[planner_server-3] 	Waiting on external lifecycle transitions to activate
-[planner_server-3] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[planner_server-3]  global_costmap lifecycle node launched. 
+[planner_server-3]  Waiting on external lifecycle transitions to activate
+[planner_server-3]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [planner_server-3] [INFO] [1689419923.055531382] [global_costmap.global_costmap]: Creating Costmap
 [controller_server-1] [INFO] [1689419923.082206754] [controller_server]: Creating controller server
 [velocity_smoother-7] [INFO] [1689419923.083369500] [velocity_smoother]: 
-[velocity_smoother-7] 	velocity_smoother lifecycle node launched. 
-[velocity_smoother-7] 	Waiting on external lifecycle transitions to activate
-[velocity_smoother-7] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[velocity_smoother-7]  velocity_smoother lifecycle node launched. 
+[velocity_smoother-7]  Waiting on external lifecycle transitions to activate
+[velocity_smoother-7]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [lifecycle_manager-8] [INFO] [1689419923.293704680] [lifecycle_manager_navigation]: Creating and initializing lifecycle service clients
 [controller_server-1] [INFO] [1689419923.439306358] [local_costmap.local_costmap]: 
-[controller_server-1] 	local_costmap lifecycle node launched. 
-[controller_server-1] 	Waiting on external lifecycle transitions to activate
-[controller_server-1] 	See https://design.ros2.org/articles/node_lifecycle.html for more information.
+[controller_server-1]  local_costmap lifecycle node launched. 
+[controller_server-1]  Waiting on external lifecycle transitions to activate
+[controller_server-1]  See https://design.ros2.org/articles/node_lifecycle.html for more information.
 [controller_server-1] [INFO] [1689419923.441419027] [local_costmap.local_costmap]: Creating Costmap
 [lifecycle_manager-8] [INFO] [1689419925.173042811] [lifecycle_manager_navigation]: Starting managed nodes bringup...
 [lifecycle_manager-8] [INFO] [1689419925.173178543] [lifecycle_manager_navigation]: Configuring controller_server
@@ -351,9 +330,24 @@ turtlebot@turtlebot-CFSZ5-2L:~$ ros2 launch nav2_bringup navigation_launch.py us
 [lifecycle_manager-8] [INFO] [1689419931.527892074] [lifecycle_manager_navigation]: Managed nodes are active
 [lifecycle_manager-8] [INFO] [1689419931.531749161] [lifecycle_manager_navigation]: Creating bond timer...
 ```
-</details>
 
 ロボットの経路計算に使われるコストマップが表示される。
 
 ![global_costmap](imgs/image-2.png)
 ![local_costmap](imgs/image-3.png)
+
+## Turtlebot3_world.worldでシュミレーション
+
+```bash
+//turtlebot3のgazeboモデルを読み込みたい
+sudo apt install ros-humble-turtlebot3-gazebo
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models
+//raspi_roverのモデルでGazeboとRvizを起動したい。（各種設定はURDFに書いてある）
+ros2 launch ros2_raspi_rover_description in_tb3.launch.py use_sim_time:=true
+//map->base_linkのtf変換をpublishかつ自己位置推定を実行したい
+ros2 launch nav2_bringup slam_launch.py use_sim_time:=true
+//地図作成しながら自律移動するなら上記、しないなら下記
+ros2 launch nav2_bringup localization_launch.py use_sim_time:=true map:=/home/turtlebot/ros2_ws/src/ros2_raspi_rover_description/maps/sim_map.yaml
+//Nav2の諸々（behavior,smoother,controller,planner,bt_navigator,waypoint_follwer,vel_smoother,life_cycle）をローンチしたい
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
+```
