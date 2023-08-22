@@ -26,6 +26,8 @@ colcon build --symlink-install
 
 ## 実行
 
+### ロボットモデルのシュミレーションとデータの可視化
+
 - in teminal1
 
 ```bash
@@ -95,6 +97,8 @@ ros2 launch ros2_raspi_rover_description display.launch.py
 
 URDFの定義が汚いとロボットが転んだり、LIDARが傾いたりする。
 慣性モーメントが非現実的というエラーが出る。
+
+### slam_toolboxを使用した自己位置推定と地図作成
 
 - in terminal2
 
@@ -169,6 +173,8 @@ currently: speed 0.5 turn 1.0
 
 このようなログが出る。/cmd_velトピックにnav_msgs/Twist型のメッセージを送るノードを立ち上げた。
 速度はデフォルトだと早すぎるので`speed 0.2`位を目安に`x`キーで減速してからコマンド打つ。
+
+### 作成した地図からコストマップを作成する
 
 - in terminal4
 
@@ -358,9 +364,11 @@ ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
 ![local_costmap](imgs/image-3.png)
 ローカルコストマップの可視化の様子
 
-## Turtlebot3_world.worldでシュミレーション
+### Turtlebot3_worldで自律移動シュミレーション
 
 上記の諸々が動作するURDFが書いてあれば以下でnav2が呼び出せる。
+nav2の操作方法については別途追記する。
+
 ```bash
 //turtlebot3のgazeboモデルを読み込みたい
 sudo apt install ros-humble-turtlebot3-gazebo
