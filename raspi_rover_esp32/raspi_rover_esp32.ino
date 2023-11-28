@@ -109,7 +109,8 @@ void setup() {
    encoder_left.attachHalfQuad(2, 15);
    encoder_right.attachHalfQuad(14, 12);
   
-  set_microros_wifi_transports("ASANOwifi", "yukiwarisou", "192.168.37.199", 8888);
+  //set_microros_wifi_transports("ASANOwifi", "yukiwarisou", "192.168.37.199", 8888);
+  set_microros_wifi_transports("Buffalo-G-42A0", "bt5adcdkgcrjj", "192.168.11.8", 8888);
 
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH);
@@ -141,7 +142,7 @@ void setup() {
       &odom_publisher,
       &node,
       ROSIDL_GET_MSG_TYPE_SUPPORT(nav_msgs, msg, Odometry),
-      "odom"));
+      "wheel_odom"));
     
   // Subscriber
   RCCHECK(rclc_subscription_init_best_effort(
@@ -272,9 +273,9 @@ void loop() {
     static double xPos = 0.0;
     static double yPos = 0.0;
     static double theta = 0.0;
+    theta += deltaTheta;
     xPos += deltaDistance * cos(theta);
     yPos += deltaDistance * sin(theta);
-    theta += deltaTheta;
 
     // オドメトリメッセージを更新
     msg_odom.pose.pose.position.x = xPos;
@@ -285,10 +286,23 @@ void loop() {
     msg_odom.pose.pose.orientation.z = sin(theta / 2.0);
     msg_odom.pose.pose.orientation.w = cos(theta / 2.0);
     msg_odom.twist.twist.linear.x = deltaDistance / dt;
-    msg_odom.twist.twist.angular.z = deltaDistance / dt;
-          
+    msg_odom.twist.twist.angular.z = deltaTheta / dt;
+    
+    // オドメトリメッセージのheader.stampに設定
+    // headerフィールドを設定
+    uint32_t now = millis();
+    msg_odom.header.stamp.sec = now / 1000; // 秒単位
+    msg_odom.header.stamp.nanosec = (now % 1000) * 1e6; // ナノ秒単位
+    // frame_idを設定
+    msg_odom.header.frame_id.data = (char *)"odom";
+    msg_odom.header.frame_id.size = strlen("odom");
+    msg_odom.header.frame_id.capacity = strlen("odom") + 1;
+    // child_frame_idを設定
+    msg_odom.child_frame_id.data = (char *)"base_link";
+    msg_odom.child_frame_id.size = strlen("base_link");
+    msg_odom.child_frame_id.capacity = strlen("base_link") + 1;
 
-    msg_left_speed_float64.data =  left_radsec;
+    msg_left_speed_float64.data = left_radsec;
     msg_right_speed_float64.data = right_radsec;
         
     RCSOFTCHECK(rcl_publish(&publisher_right_float64, &msg_right_speed_float64, NULL));
