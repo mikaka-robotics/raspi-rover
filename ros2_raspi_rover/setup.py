@@ -21,7 +21,9 @@ setup(
     entry_points={
         'console_scripts': [
             'twist_to_radsec = ros2_raspi_rover.twist_to_radsec_diff:main',
-            'trapezoidal = ros2_raspi_rover.trapezoidal_control:main'
+            'twist_to_odom = ros2_raspi_rover.twist_to_odom:main',
+            'twist_to_websocket = ros2_raspi_rover.twist_to_websocket:main',
+            'odom_to_joint_state = ros2_raspi_rover.odom_to_joint_state:main'
         ],
     },
 )

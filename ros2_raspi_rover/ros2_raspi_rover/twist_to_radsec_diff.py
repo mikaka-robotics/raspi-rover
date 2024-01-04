@@ -5,6 +5,7 @@ from std_msgs.msg import Float64
 
 WIDTH = 0.09 # 車体の幅(m)
 RADIUS = 0.03 # 車輪の半径(m)
+TIMEOUT = 0.5 # タイムアウト時間 (秒)
 
 class TwistSubRpmPub(Node):
 
@@ -26,7 +27,9 @@ class TwistSubRpmPub(Node):
             'target_right_radsec',
             10
         )
+        self.timer = self.create_timer(TIMEOUT, self.timeout_callback)
         self.cmd_subscription  # prevent unused variable warning
+        self.last_recieved = self.get_clock().now()
         self.left_wheel_publisher
         self.right_wheel_publisher
 
@@ -62,6 +65,19 @@ class TwistSubRpmPub(Node):
         right_wheel_msg = Float64()
         right_wheel_msg.data = right_wheel_radsec
         self.right_wheel_publisher.publish(right_wheel_msg)
+
+        self.last_recieved = self.get_clock().now()
+    
+    def timeout_callback(self):
+        current_time = self.get_clock().now()
+        if (current_time - self.last_recieved).nanoseconds * 1e-9 >= TIMEOUT:
+            left_wheel_msg = Float64()
+            left_wheel_msg.data = 0.0
+            self.left_wheel_publisher.publish(left_wheel_msg)
+
+            right_wheel_msg = Float64()
+            right_wheel_msg.data = 0.0
+            self.right_wheel_publisher.publish(right_wheel_msg)
 
 def main(args=None):
     rclpy.init(args=args)
